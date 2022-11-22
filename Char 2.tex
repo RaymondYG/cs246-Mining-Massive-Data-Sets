@@ -1,0 +1,72 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+\usepackage{amssymb}
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{CHAPTER 2. MAPREDUCE AND THE NEW SOFTWARE STACK}
+\author{Raymond}
+
+\begin{document}
+\maketitle
+
+
+\section{Exercise 2.2.1}
+\subsection{a}
+Yes, I expect there to be more skew in the times taken by the various reducers to process their value list. Assume that there are $m$ documents to be considered. The reason is that, for the word that appears more time, such as the stop word, if we don't use the combiner in the Map tasks, the reduce process should calculate significantly more times of sum, however if we perform combiner, the total summing time will be no more than $m$ times. In other words, the combiner in the Map tasks help to reduce the pressure of the reduce tasks, so that among the reduce task, the workload should be smaller than without the combiner. 
+
+\subsection{b}
+
+We can expect more skew if we combine 10 reduce tasks than 10,000 reduce tasks. Assume the time of the reduce task follows a normal distribution with $N~(\mu,\sigma^2)$, and there are in total $m$ calculation. If we divide them into 10 tasks, for each task the total time should follow $N~(\frac{m}{10}*\mu,\frac{m}{10}*\sigma^2)$. If we divide them into 10,000 tasks, should follow $N~(\frac{m}{10,000}*\mu,\frac{m}{10,000}*\sigma^2)$, where we can see that the latter variance is lower than the former one. 
+
+\section{Exercise 2.3.1}
+
+\subsection{a) The Largest Integer}
+
+Map function:
+
+Map(file):
+maxLocal = MIN-INTEGER
+
+for i in file:
+
+	if i $>=$ maxLocal:
+		
+		maxLocal = i
+		
+return ['max',maxLocal]
+
+Reduce function([key,value]):
+
+maxGlobal = MIN-INTEGER
+
+for i in value:
+
+	if i $>=$ maxGlobal:
+		
+		maxGlobal = i
+
+return maxGlobal
+
+
+\section{Exercise 2.4.1}
+
+$\mathbb{E}$(\#Times Failure per Task) = tp, since it follows a Binomial Distribution. So, $\mathbb{E}$(Total Time)$ = nt+tp*10t*n = nt(1+10pt)$
+
+\section{Exercise 2.4.2}
+
+Suppose executing a superstep costs $t$, there are $m$ total supersteps, and we take a checkpoint every $n$ steps. $\mathbb{E}$(Total Time)$ = p*m*\frac{(n-1)}{2}*t + t*m + \frac{m}{n} * c * t = tm(p*\frac{n-1}{2}+1+\frac{1}{n}*c)$. Take derivative of $n$, we have $\frac{p}{2}-\frac{c}{n^2}$. If $\frac{p}{2}<\frac{c}{n^2}$, $\mathbb{E}$(Total Time) is monotone decreasing, and we can have the min value when $n=(\frac{2c}{p})^{\frac{1}{2}}$
+
+\bibliographystyle{alpha}
+
+
+\end{document}
